@@ -7,8 +7,8 @@ from database import DatabaseConnection
 URL = "https://www.infomoney.com.br/wp-admin/admin-ajax.php"
 data = {"action": "tool_altas_e_baixas",
         "pagination": 1,
+        "altas_e_baixas_table_nonce":"15fff0585b",
         "perPage": 100,
-        "altas_e_baixas_table_nonce":"061c83fd42",
         "stock": 1,
         "type":1,
         "market":4224
@@ -17,6 +17,7 @@ data = {"action": "tool_altas_e_baixas",
 def extract_stock_page() -> any:
     page = requests.post(URL, data)
     json_data = json.loads(page.text)
+    print(json_data)
     return json_data
 
 def split_stock_data(json_data: json) -> dict:

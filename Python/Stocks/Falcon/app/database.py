@@ -30,6 +30,14 @@ class DatabaseConnection:
         except ValueError as e:
             print(e)
     
+    def list_all_stocks(self):
+        try:
+            self.cursor.execute("SELECT * FROM stock")
+            rows = self.cursor.fetchall()
+            return rows
+        except ValueError as e:
+            print(e)
+    
     def close_connection(self):
         self.connection.close()
 

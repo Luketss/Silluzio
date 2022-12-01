@@ -1,8 +1,11 @@
+import json
 from fastapi import FastAPI
+from database import DatabaseConnection
 
 app = FastAPI()
 
-
-@app.get("/")
+@app.get("/stock")
 async def root():
-    return {"message": "Hello World"}
+    obj = DatabaseConnection()
+    data = obj.list_all_stocks()
+    return(data) 
