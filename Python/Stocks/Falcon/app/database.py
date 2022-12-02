@@ -9,6 +9,12 @@ class DatabaseConnection:
         self._connection = self._create_connection()
         self._cursor = self.connection.cursor()
 
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.close()
+
     def _create_connection(self):
         try:
             connection = sqlite3.connect(self.connection_string)

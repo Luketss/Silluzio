@@ -8,7 +8,7 @@ URL = "https://www.infomoney.com.br/wp-admin/admin-ajax.php"
 data = {
     "action": "tool_altas_e_baixas",
     "pagination": 1,
-    "altas_e_baixas_table_nonce": "15fff0585b",
+    "altas_e_baixas_table_nonce": "933e478541",
     "perPage": 100,
     "stock": 1,
     "type": 1,
@@ -44,7 +44,6 @@ def split_stock_data(json_data: json) -> dict:
         ) = company
         stock_list.append(
             (
-                None,
                 stock_code,
                 c_name,
                 f"{current_time} {time}",
@@ -62,6 +61,11 @@ if __name__ == "__main__":
     json_data = extract_stock_page()
     print(json_data)
     stocks = split_stock_data(json_data)
-    for s in stocks:
-        print(s)
-        obj.execute_query(s)
+    with DatabaseConnection() as db:
+        for s in stocks:
+            print(s)
+            # db.execute(f"INSERT INTO stock VALUES(?, ?, ?, ?, ?, ?, ?, ?), {s}")
+            db.execute(
+                "INSERT INTO stock (stock_code, c_name, time, price, min_value, max_value, volume) VALUES (?, ?, ?, ?, ?, ?, ?)",
+                s,
+            )
