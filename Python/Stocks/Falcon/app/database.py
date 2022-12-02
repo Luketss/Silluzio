@@ -4,17 +4,46 @@ from query import table_list
 
 
 class DatabaseConnection:
-    def __init__(self, db_file: str = "stock.db"):
-        self.db_file = db_file
-        self.connection = self.create_connection()
-        self.cursor = self.connection.cursor()
+    def __init__(self, connection_string: str = "stock.db"):
+        self.connection_string = connection_string
+        self._connection = self._create_connection()
+        self._cursor = self.connection.cursor()
 
-    def create_connection(self):
+    def _create_connection(self):
         try:
-            connection = sqlite3.connect(self.db_file)
+            connection = sqlite3.connect(self.connection_string)
             return connection
         except ValueError as e:
             print(e)
+
+    @property
+    def connection(self):
+        return self._connection
+
+    @property
+    def cursor(self):
+        return self._cursor
+
+    def commit(self):
+        self.connection.commit()
+
+    def close(self, commit=True):
+        if commit:
+            self.commit()
+        self.connection.close()
+
+    def execute(self, sql, params=None):
+        self.cursor.execute(sql, params or ())
+
+    def fetchall(self):
+        return self.cursor.fetchall()
+
+    def fetchone(self):
+        return self.cursor.fetchone()
+
+    def query(self, sql, params=None):
+        self.cursor.execute(sql, params or ())
+        return self.fetchall()
 
     def create_table(self, sql_table):
         try:
@@ -23,26 +52,29 @@ class DatabaseConnection:
         except ValueError as e:
             print(e)
 
-    def execute_query(self, data):
-        try:
-            print(f"Writing {data}")
-            self.cursor.execute(
-                "INSERT INTO stock VALUES(?, ?, ?, ?, ?, ?, ?, ?)", data
-            )
-            self.connection.commit()
-        except ValueError as e:
-            print(e)
+    # def execute_query(self, data):
+    #     try:
+    #         print(f"Writing {data}")
+    #         self.cursor.execute(
+    #             "INSERT INTO stock VALUES(?, ?, ?, ?, ?, ?, ?, ?)", data
+    #         )
+    #         self.connection.commit()
+    #     except ValueError as e:
+    #         print(e)
 
     def list_all_stocks(self):
-        try:
-            self.cursor.execute("SELECT * FROM stock")
-            rows = self.cursor.fetchall()
-            return rows
-        except ValueError as e:
-            print(e)
+        sql = "SELECT * FROM stock"
+        return self.query(sql)
 
-    def close_connection(self):
-        self.connection.close()
+    def stock_by_date(self, field, value):
+        sql = "SELECT * FROM stock WHERE ? = ?"
+        return self.query(
+            sql,
+            (
+                field,
+                value,
+            ),
+        )
 
 
 if __name__ == "__main__":
