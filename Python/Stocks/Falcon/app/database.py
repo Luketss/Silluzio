@@ -7,7 +7,7 @@ class DatabaseConnection:
     def __init__(self, connection_string: str = "stock.db"):
         self.connection_string = connection_string
         self._connection = self._create_connection()
-        self._cursor = self.connection.cursor()
+        self._cursor = self._connection.cursor()
 
     def __enter__(self):
         return self
@@ -31,42 +31,32 @@ class DatabaseConnection:
         return self._cursor
 
     def commit(self):
-        self.connection.commit()
+        self._connection.commit()
 
     def close(self, commit=True):
         if commit:
             self.commit()
-        self.connection.close()
+        self._connection.close()
 
     def execute(self, sql, params=None):
-        self.cursor.execute(sql, params or ())
+        self._cursor.execute(sql, params or ())
 
     def fetchall(self):
-        return self.cursor.fetchall()
+        return self._cursor.fetchall()
 
     def fetchone(self):
-        return self.cursor.fetchone()
+        return self._cursor.fetchone()
 
     def query(self, sql, params=None):
-        self.cursor.execute(sql, params or ())
+        self._cursor.execute(sql, params or ())
         return self.fetchall()
 
     def create_table(self, sql_table):
         try:
-            self.cursor.execute(sql_table)
-            self.connection.commit()
+            self._cursor.execute(sql_table)
+            self._connection.commit()
         except ValueError as e:
             print(e)
-
-    # def execute_query(self, data):
-    #     try:
-    #         print(f"Writing {data}")
-    #         self.cursor.execute(
-    #             "INSERT INTO stock VALUES(?, ?, ?, ?, ?, ?, ?, ?)", data
-    #         )
-    #         self.connection.commit()
-    #     except ValueError as e:
-    #         print(e)
 
     def list_all_stocks(self):
         sql = "SELECT * FROM stock"

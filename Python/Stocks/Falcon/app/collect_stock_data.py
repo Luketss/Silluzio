@@ -59,7 +59,6 @@ def split_stock_data(json_data: json) -> dict:
 if __name__ == "__main__":
     obj = DatabaseConnection()
     json_data = extract_stock_page()
-    print(json_data)
     stocks = split_stock_data(json_data)
     with DatabaseConnection() as db:
         for s in stocks:
