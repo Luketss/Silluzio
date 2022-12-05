@@ -8,7 +8,7 @@ URL = "https://www.infomoney.com.br/wp-admin/admin-ajax.php"
 data = {
     "action": "tool_altas_e_baixas",
     "pagination": 1,
-    "altas_e_baixas_table_nonce": "933e478541",
+    "altas_e_baixas_table_nonce": "6d317dd767",
     "perPage": 100,
     "stock": 1,
     "type": 1,
@@ -19,7 +19,6 @@ data = {
 def extract_stock_page() -> any:
     page = requests.post(URL, data)
     json_data = json.loads(page.text)
-    print(json_data)
     return json_data
 
 
@@ -63,7 +62,6 @@ if __name__ == "__main__":
     with DatabaseConnection() as db:
         for s in stocks:
             print(s)
-            # db.execute(f"INSERT INTO stock VALUES(?, ?, ?, ?, ?, ?, ?, ?), {s}")
             db.execute(
                 "INSERT INTO stock (stock_code, c_name, time, price, min_value, max_value, volume) VALUES (?, ?, ?, ?, ?, ?, ?)",
                 s,
