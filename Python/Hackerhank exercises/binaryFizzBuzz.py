@@ -11,10 +11,11 @@ Output
 
 ["1", "2", "Fizz", "4", "Buzz", "Fizz", "7", "8", "Fizz", "Buzz", "11", "Fizz", "13", "14", "FizzBuzz"]"""
 
+
 class Solution:
     def solve(self, n):
         elements = []
-        for value in range(1,n+1):
+        for value in range(1, n + 1):
             if value % 3 == 0 and value % 5 == 0:
                 elements.append("FizzBuzz")
             elif value % 3 == 0:
