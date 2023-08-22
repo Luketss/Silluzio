@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "igaming"
+version = "0.0.1"
+description = "This project will create a igaming api"
+authors = ["Luketss <lucassilluzio@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.101.1"
+uvicorn = {extras = ["standard"], version = "^0.23.2"}
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
