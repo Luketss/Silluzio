@@ -66,3 +66,78 @@ a {
   background: #0f0f0f;
   transform-origin: top;
 }
+
+.centered-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.centered-form {
+  width: 400px;
+  padding: 30px;
+  border-radius: 15px;
+  background: linear-gradient(to right, #4caf50, #45a049);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  color: white;
+  text-align: center; /* Center text content */
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 15px;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+textarea {
+  resize: vertical;
+}
+
+button {
+  background-color: #fff;
+  color: #4caf50;
+  padding: 12px 20px; /* Wider button for better visual balance */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+button:hover {
+  background-color: #4caf50;
+  color: white;
+}
+
+/* Center the button */
+.button-container {
+  display: flex;
+  justify-content: center;
+}
+
+/* Optional: Add some additional styling for better aesthetics */
+h1 {
+  margin-bottom: 20px;
+  font-size: 24px;
+}
+
+.centered-form a {
+  color: #fff;
+  text-decoration: none;
+}
+
+.centered-form a:hover {
+  text-decoration: underline;
+}
