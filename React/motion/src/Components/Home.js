@@ -4,8 +4,9 @@ import transition from "../transition";
 
 const Home = () => {
     return (
-        <div>
-            <h1>Home Page</h1>
+        <div className="centered-div">
+            <p className="margin">my website</p>
+            <p className="margin">&#128679; &#128679; under construction &#128679; &#128679;</p>
         </div>
     )
 }

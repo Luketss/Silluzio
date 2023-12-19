@@ -29,7 +29,7 @@ body {
   font-size: 1.5vw;
 }
 
-h1 {
+.centered-div {
   width: 80%;
   position: absolute;
   top: 50%;
@@ -37,9 +37,13 @@ h1 {
   transform: translate(-50%, -50%);
   text-align: center;
   font-weight: 500;
-  font-size: 10vw;
+  font-size: 3vw;
   line-height: 1;
   text-transform: uppercase;
+}
+
+.margin {
+  margin: 20px;
 }
 
 a {
@@ -81,7 +85,7 @@ a {
   background: linear-gradient(to right, #4caf50, #45a049);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
   color: white;
-  text-align: center; /* Center text content */
+  text-align: center;
 }
 
 label {
@@ -108,7 +112,7 @@ textarea {
 button {
   background-color: #fff;
   color: #4caf50;
-  padding: 12px 20px; /* Wider button for better visual balance */
+  padding: 12px 20px;
   border: none;
   border-radius: 5px;
   cursor: pointer;
