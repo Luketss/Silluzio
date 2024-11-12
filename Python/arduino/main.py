@@ -51,15 +51,17 @@ def handle_stop_water_command(message):
     bot.reply_to(message, response)
 
 
-@bot.message_handler(commands=["moisture"])
+@bot.message_handler(commands=["solo"])
 def display_moisture_command(message):
     data = arduino.readline().decode().strip()
+    print(data)
     try:
         sensor_data = json.loads(data)
         sensor_value = sensor_data["sensorValue"]
 
     except json.JSONDecodeError:
         print("Failed to decode JSON:", data)
+        return
 
     if sensor_value < 80:
         bot.reply_to(
@@ -94,7 +96,11 @@ def monitor_sensor():
 
 
 if __name__ == "__main__":
-    sensor_thread = Thread(target=monitor_sensor)
+    print("bot started")
+    sensor_thread = Thread(target=monitor_sensor, daemon=True)  # Set daemon to True
     sensor_thread.start()
 
-    bot.polling()
+    try:
+        bot.polling()
+    except KeyboardInterrupt:
+        print("\nProgram interrupted. Exiting...")
