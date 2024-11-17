@@ -2,14 +2,20 @@ import serial
 import json
 import telebot
 from threading import Thread
+import time  # For timestamp handling
 
-TELEGRAM_BOT_TOKEN = ""
-CHAT_ID = ""
+TELEGRAM_BOT_TOKEN = "6731455652:AAE8Pp26fTfRa56yOug5zBqE6RSRwZItWFg"
+CHAT_ID = "-4599201144"
 
 PORT = "COM3"
 arduino = serial.Serial(port=PORT, baudrate=9600, timeout=0.1)
 
 bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
+
+# Shared variables
+latest_sensor_value = None
+last_alert_time = 0  # Timestamp of the last alert sent
+ALERT_INTERVAL = 10 * 60  # 10 minutes in seconds
 
 
 class WaterSystem:
@@ -35,8 +41,21 @@ water_system = WaterSystem()
 
 
 def send_alert(sensor_value):
-    message = f"Alert! Sensor value is low: {sensor_value}. Consider watering the soil."
-    bot.send_message(CHAT_ID, message)
+    global last_alert_time
+    current_time = time.time()
+    if current_time - last_alert_time >= ALERT_INTERVAL:
+        # Send the alert message
+        message = (
+            f"Alert! Sensor value is low: {sensor_value}. Consider watering the soil."
+        )
+        bot.send_message(CHAT_ID, message)
+
+        # Update the timestamp
+        last_alert_time = current_time
+    else:
+        print(
+            f"Alert skipped. Next alert allowed in {int((ALERT_INTERVAL - (current_time - last_alert_time)) // 60)} minutes."
+        )
 
 
 @bot.message_handler(commands=["water"])
@@ -53,40 +72,31 @@ def handle_stop_water_command(message):
 
 @bot.message_handler(commands=["solo"])
 def display_moisture_command(message):
-    data = arduino.readline().decode().strip()
-    print(data)
-    try:
-        sensor_data = json.loads(data)
-        sensor_value = sensor_data["sensorValue"]
-
-    except json.JSONDecodeError:
-        print("Failed to decode JSON:", data)
-        return
-
-    if sensor_value < 80:
-        bot.reply_to(
-            message,
-            f"Alert! Sensor value is low: {sensor_value}. Consider watering the soil.",
-        )
-        return
-    bot.reply_to(message, f"Alert! Sensor value is good: {sensor_value}.")
+    if latest_sensor_value is not None:
+        bot.reply_to(message, f"Alert! Sensor value is: {latest_sensor_value}.")
+    else:
+        bot.reply_to(message, "No sensor data available yet.")
 
 
-# Function to continuously read data from Arduino and check sensor value
+# Function to continuously read data from Arduino and update sensor value
 def monitor_sensor():
+    global latest_sensor_value
     while True:
         try:
             # Read data from Arduino
             data = arduino.readline().decode().strip()
-            if data:
+            if data and data.startswith("{") and data.endswith("}"):
                 try:
                     # Parse the JSON-like data from Arduino
                     sensor_data = json.loads(data)
                     sensor_value = sensor_data["sensorValue"]
 
+                    # Update the shared variable
+                    latest_sensor_value = sensor_value
+
                     # Check if the sensor value is below the threshold
-                    # if sensor_value < 80:
-                    #     send_alert(sensor_value)
+                    if sensor_value < 80:
+                        send_alert(sensor_value)
 
                 except json.JSONDecodeError:
                     print("Failed to decode JSON:", data)
@@ -103,4 +113,5 @@ if __name__ == "__main__":
     try:
         bot.polling()
     except KeyboardInterrupt:
+        arduino.close()
         print("\nProgram interrupted. Exiting...")
