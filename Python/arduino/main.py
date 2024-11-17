@@ -4,8 +4,8 @@ import telebot
 from threading import Thread
 import time  # For timestamp handling
 
-TELEGRAM_BOT_TOKEN = "6731455652:AAE8Pp26fTfRa56yOug5zBqE6RSRwZItWFg"
-CHAT_ID = "-4599201144"
+TELEGRAM_BOT_TOKEN = ""
+CHAT_ID = ""
 
 PORT = "COM3"
 arduino = serial.Serial(port=PORT, baudrate=9600, timeout=0.1)
